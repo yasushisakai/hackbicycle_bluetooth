@@ -34,5 +34,5 @@ use it
 
 # how to run
 ```cd hackbicycle_bluetooth```
-```node test.js```
+```npm start```
 

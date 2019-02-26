@@ -1,10 +1,16 @@
 // bluetooth peripheral test
 require("date-utils");
+
+const os = require("os");
+const fs = require("fs")
 const bleno = require("bleno");
 const util = require("util");
 
+// config
+const logFile = "write.log"
+
 // configuration bleno
-const MyName = "rasp-blue-test";
+const MyName = os.hostname();
 const MyServiceUUID = "FF00";
 const serviceUUIDs = [MyServiceUUID];
 const CommCharacteristicUUID = "FF01";
@@ -28,6 +34,7 @@ CommCharacteristic.prototype.onReadRequest = function(offset, callback){
 };
 CommCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback){
   console.log("write request: " + data.toString("UTF-8"));
+  logWrite(`${Date.now()},${data}`);
   callback(this.RESULT_SUCCESS);
 };
 
@@ -83,3 +90,13 @@ function exit(){
   process.exit();
 }
 process.on('SIGINT', exit);
+
+
+// ---------------------------------------------------------------------------
+function logWrite(data){
+
+  fs.appendFile(logFile, data, function(err){
+    if(err != null) console.log(`error:${err}`);
+  })
+
+}
