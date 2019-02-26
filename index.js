@@ -7,6 +7,7 @@ const bleno = require("bleno");
 const util = require("util");
 
 // config
+const logFilePath = "/home/pi/"
 const logFile = "write.log"
 
 // configuration bleno
@@ -95,7 +96,7 @@ process.on('SIGINT', exit);
 // ---------------------------------------------------------------------------
 function logWrite(data){
 
-  fs.appendFile(logFile, data, function(err){
+  fs.appendFile(logFilePath + logFile, data + '\n', function(err){
     if(err != null) console.log(`error:${err}`);
   })
 

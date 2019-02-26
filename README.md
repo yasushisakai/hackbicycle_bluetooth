@@ -26,6 +26,7 @@ use it
 ## clone this node app
 
 ```git clone https://github.com/yasushisakai/hackbicycle-bluetooth```
+```chmod +x start.sh```
 ```npm install```
 
 ## set node to run on root/sudo
@@ -36,3 +37,4 @@ use it
 ```cd hackbicycle_bluetooth```
 ```npm start```
 
+# add start.sh to rc.local for starting this up
