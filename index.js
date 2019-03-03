@@ -1,20 +1,25 @@
 // bluetooth peripheral test
 require("date-utils");
-
 const os = require("os");
 const fs = require("fs")
 const bleno = require("bleno");
 const util = require("util");
+const execSync = require('child_process').execSync;
 
 // config
 const logFilePath = "/home/pi/"
-const logFile = "write.log"
+// const basePath = "/Users/yasushi/"
+const logFilePath = basePath + "write.log"
+const uuidFilePath = basePath + "uuid.txt"
 
-// configuration bleno
 const MyName = os.hostname();
-const MyServiceUUID = "FF00";
+
+if(!fs.existsSync(uuidFilePath)){
+  createUUID(uuidFilePath); 
+}
+
+const [MyServiceUUID, CommCharacteristicUUID] = readUUID(uuidFilePath);
 const serviceUUIDs = [MyServiceUUID];
-const CommCharacteristicUUID = "FF01";
 
 // create characteristic
 const CommCharacteristic = function() {
@@ -95,9 +100,36 @@ process.on('SIGINT', exit);
 
 // ---------------------------------------------------------------------------
 function logWrite(data){
-
-  fs.appendFile(logFilePath + logFile, data + '\n', function(err){
+  fs.appendFile(logFilePath, data + '\n', function(err){
     if(err != null) console.log(`error:${err}`);
   })
-
 }
+
+// ---------------------------------------------------------------------------
+
+function createUUID(filePath){
+  const newUUID = () => execSync('uuidgen').toString().trim();
+  const fileContents = ['service', 'commCharacteristic']
+    .map((value) => `${value},${newUUID()}`) 
+    .join('\n');
+  fs.writeFileSync(filePath, fileContents)
+}
+
+function readUUID(filePath){
+  const data = fs.readFileSync(filePath);
+  const uuids = data.toString().split('\n');
+  const getUUID = (line) => line.split(',')[1];
+  const result =  [getUUID(uuids[0]), getUUID(uuids[1])]
+  return result
+}
+
+
+
+
+
+
+
+
+
+
+
