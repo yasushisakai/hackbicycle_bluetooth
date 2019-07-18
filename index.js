@@ -7,7 +7,7 @@ const util = require("util");
 const execSync = require('child_process').execSync;
 
 // config
-const logFilePath = "/home/pi/"
+const basePath = "/home/pi/"
 // const basePath = "/Users/yasushi/"
 const logFilePath = basePath + "write.log"
 const uuidFilePath = basePath + "uuid.txt"
@@ -39,7 +39,25 @@ CommCharacteristic.prototype.onReadRequest = function(offset, callback){
   callback(this.RESULT_SUCCESS, data);
 };
 CommCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback){
-  console.log("write request: " + data.toString("UTF-8"));
+		var char = data.toString("UTF-8")
+	  console.log("write request: " + char);
+	if(char == 'a'){
+		fs.writeFile("/home/pi/test.txt", "true", (err)=>{
+			if(err){
+				console.log(err);
+			}
+
+			console.log("true")
+		})	
+		
+	} else if (char=='b'){
+		fs.writeFile("/home/pi/test.txt", "false",(err)=>{
+			if(err){
+				console.log(err);
+			}
+			console.log("false");
+		})
+	}
   logWrite(`${Date.now()},${data}`);
   callback(this.RESULT_SUCCESS);
 };
