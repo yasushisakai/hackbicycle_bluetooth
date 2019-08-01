@@ -23,6 +23,10 @@ use it
 
 ```nodebrew use 9.11.2```
 
+## install uuidgen
+
+```sudo apt-get install uuid-runtime```
+
 ## clone this node app
 
 ```git clone https://github.com/yasushisakai/hackbicycle-bluetooth```
