@@ -41,17 +41,25 @@ CommCharacteristic.prototype.onReadRequest = function(offset, callback){
 CommCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback){
 		var char = data.toString("UTF-8")
 	  console.log("write request: " + char);
-	if(char == 'a'){
-		fs.writeFile("/home/pi/test.txt", "true", (err)=>{
+	if(char.startsWith("a, ")){
+		let char_split = char.split(', ')
+		let status = {
+			record: true,
+			uuid: char_split[2],
+			start: char_split[1],	
+		}
+		fs.writeFile(`${basePath}status.json`, JSON.stringify(status), (err)=>{
+			console.log(`${basePath}status.json`)
 			if(err){
 				console.log(err);
 			}
-
 			console.log("true")
 		})	
-		
 	} else if (char=='b'){
-		fs.writeFile("/home/pi/test.txt", "false",(err)=>{
+		let status = {
+			record: false
+		}
+		fs.writeFile(`${basePath}status.json`, JSON.stringify(status),(err)=>{
 			if(err){
 				console.log(err);
 			}
