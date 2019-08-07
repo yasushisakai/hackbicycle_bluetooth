@@ -33,7 +33,7 @@ util.inherits(CommCharacteristic, bleno.Characteristic);
 
 CommCharacteristic.prototype.onReadRequest = function(offset, callback){
   var dt = new Date();
-  var str = dt.toFormat("YYYY-MM-DD HH24:MI:SS");
+  var str = dt.toISOString();
   console.log("read request -> " + str);
   var data = Buffer.from(str, "UTF-8"); 
   callback(this.RESULT_SUCCESS, data);
@@ -41,7 +41,7 @@ CommCharacteristic.prototype.onReadRequest = function(offset, callback){
 CommCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback){
 		var char = data.toString("UTF-8")
 	  console.log("write request: " + char);
-	if(char.startsWith("a, ")){
+	if(char.startsWith("s, ")){
 		let char_split = char.split(', ')
 		let status = {
 			record: true,
@@ -55,7 +55,7 @@ CommCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
 			}
 			console.log("true")
 		})	
-	} else if (char=='b'){
+	} else if (char.startsWith("e")){
 		let status = {
 			record: false
 		}
@@ -65,8 +65,12 @@ CommCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
 			}
 			console.log("false");
 		})
+	} else {
+		console.log(char)
 	}
-  logWrite(`${Date.now()},${data}`);
+	// TODO: we have command h for heartbeat
+	let now = new Date();
+  logWrite(`${now.toISOString()},${data}`);
   callback(this.RESULT_SUCCESS);
 };
 
@@ -148,8 +152,6 @@ function readUUID(filePath){
   const result =  [getUUID(uuids[0]), getUUID(uuids[1])]
   return result
 }
-
-
 
 
 
